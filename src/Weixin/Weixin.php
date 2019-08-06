@@ -31,6 +31,10 @@ class Weixin
         }
     }
 
+    /**
+     * 获取 access_token
+     * @return mixed
+     */
     private function getAccessToken()
     {
         try {
@@ -40,7 +44,7 @@ class Weixin
                 $jsonContent = $this->httpGet($url);
                 $response = json_decode($jsonContent, true);
                 if (isset($response['errcode'])) {
-                    throw new \Exception($response['errcode']);
+                    throw new \Exception('微信错误码：' . $response['errcode']);
                 }
                 if ($response['access_token']) {
                     $data['expire_time'] = time() + 7000;
@@ -68,26 +72,35 @@ class Weixin
         $data = json_encode($data);
         $access_token = $this->getAccessToken();
         $url = sprintf($this->api['send'], $access_token);
-        $response = $this->httpPost($url, $data);
-        print_r($response);
+        $json = $this->httpPost($url, $data);
+        $response = json_decode($json, true);
+        if (isset($response['errcode']) && $response['errcode'] != 0) {
+            throw new \Exception('微信错误码：' . $response['errcode']);
+        } else {
+            return true;
+        }
     }
 
 
-    private
-    function getPhpFile()
+    /**
+     * 获取缓存
+     * @return mixed
+     */
+    private function getPhpFile()
     {
         $file = $this->config['path'] . $this->config['AppId'] . '.php';
         $content = trim(substr(file_get_contents($file), 15));
         return json_decode($content, true);
     }
 
-    private
-    function setPhpFile($content)
+    /**
+     * 写入缓存
+     * @param $content
+     */
+    private function setPhpFile($content)
     {
         $file = $this->config['path'] . $this->config['AppId'] . '.php';
-        $fp = fopen($file, "w");
-        fwrite($fp, "<?php exit();?>" . $content);
-        fclose($fp);
+        file_put_contents($file, "<?php exit();?>" . $content);
     }
 
     private
