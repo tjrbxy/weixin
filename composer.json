@@ -1,0 +1,19 @@
+{
+    "name": "abel.tang/weixin",
+    "description": "weixin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "abel.tang",
+            "email": "972980756@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Weixin\\": "src/Weixin"
+        }
+    }
+}
