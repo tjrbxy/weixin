@@ -89,8 +89,12 @@ class Weixin
     private function getPhpFile()
     {
         $file = $this->config['path'] . $this->config['AppId'] . '.php';
-        $content = trim(substr(file_get_contents($file), 15));
-        return json_decode($content, true);
+        if(!file_exists($file)){
+            return [];
+        }else{
+            $content = trim(substr(file_get_contents($file), 15));
+            return json_decode($content, true);
+        }
     }
 
     /**
